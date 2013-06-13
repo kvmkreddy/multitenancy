@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{{yyyy-MM-dd HH:mm:ss} [%t] %-5p %C{1} (%F:%L) - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="FileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="C://Murali/multitenancy/orm.log" />
+		<param name="append" value="false" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{{yyyy-MM-dd HH:mm:ss} [%t] %-5p %C{1} (%F:%L) - %m%n" />
+		</layout>
+	</appender>
+
+	<logger name="org.os.javaee" additivity="true">
+		<level value="DEBUG" />
+	</logger>
+	
+	<logger name="org.hibernate" additivity="true">
+		<level value="TRACE" />
+	</logger>
+
+	<logger name="org.apache" additivity="true">
+		<level value="ERROR" />
+	</logger>
+
+	<logger name="org.springframework" additivity="true">
+		<level value="ERROR" />
+		
+	</logger>
+
+	<root>
+		<priority value="ERROR"></priority>
+		<appender-ref ref="FileAppender" />
+		<appender-ref ref="consoleAppender" />
+	</root>
+
+</log4j:configuration>

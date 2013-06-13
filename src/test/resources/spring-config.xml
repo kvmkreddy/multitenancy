@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation=" 
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.2.xsd
+     http://www.springframework.org/schema/jee 
+     http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+     http://www.springframework.org/schema/tx
+	 http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+	<context:annotation-config/>
+	
+	<context:component-scan base-package="org.os.javaee.orm.multitenancy"/>
+	<context:component-scan base-package="org.os.javaee.orm.hibernate.dao"/>
+	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<bean id="tenantContextHolder" class="org.os.javaee.orm.multitenancy.context.TenantContextHolderFactory" factory-method="getTenantContextHolder"/>
+	
+	<bean id="hibernateInterceptor" class="org.os.javaee.orm.multitenancy.hibernate.interceptor.HibernateMTInterceptor">
+		<property name="contextHolder" ref="tenantContextHolder">
+			<!--   <bean name="tenantContextHolder" class="org.os.javaee.orm.multitenancy.context.ThreadLocalTenantContextHolder"/> -->
+		</property>
+	</bean>
+
+<!-- 	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin://SOME_SERVER:1521/SCHEMA_NAME" />
+		<property name="username" value="USER_ID" />
+		<property name="password" value="PASSWORD" />
+	</bean>
+ -->
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:tcp://localhost/orm" />
+		<property name="username" value="username" />
+		<property name="password" value="password" />
+	</bean>
+ 
+	<bean id="springSessionFactory"  class="org.os.javaee.orm.multitenancy.hibernate.MultiTenancyLocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="entityInterceptor" ref="hibernateInterceptor" />
+		
+		<property name="hibernateProperties" >
+			<props>
+				<!--  <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop> -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>				 
+				<prop key="hibernate.default_batch_fetch_size">10</prop>
+			</props>
+		</property>
+		
+		<property name="filterList">
+			<list value-type="java.util.ArrayList">
+					<bean name="tenantFilterInfo" class="org.os.javaee.orm.multitenancy.hibernate.FilterInfo">
+						<property name="name" value="tenantFilter"/>
+						<property name="defaultCondition" value=":tenantParam=TENANT_ID"/>
+						<property name="parametersType">
+							<map>
+								<entry key="tenantParam">
+									<bean name="intType" class="org.hibernate.type.IntegerType"/>
+								</entry>
+							</map>
+							
+						</property>
+					</bean>
+				
+			</list>
+		</property>
+		
+		<property name="packagesToScan">
+			<list merge="true">
+				<value>org.os.javaee.orm.multitenancy.entity</value>
+			</list>
+		</property>		
+	</bean>
+	
+	<bean id="sessionFactory" class="org.os.javaee.orm.multitenancy.hibernate.SessionFactory">
+		<property name="sessionFactory" ref="springSessionFactory"/>
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager"/> 
+
+	
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="springSessionFactory" />
+	</bean>
+	
+	<bean name="mtEnabledDAO" class="org.os.javaee.orm.multitenancy.hibernate.dao.MultiTenancyEnabledDAO">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+</beans>
