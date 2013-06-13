@@ -1,6 +1,6 @@
 package org.os.javaee.orm.multitenancy.context;
 
-import java.io.Serializable;
+import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 
 /**
  * <p>Title: TenantContext</p>
@@ -10,18 +10,28 @@ import java.io.Serializable;
  * @author Murali Reddy
  * @version 1.0
  */
-public class TenantContext implements Serializable{
+@ReferenceImplementation
+public class TenantContext implements ITenantContext<String>{
 
 	
 	private static final long serialVersionUID = -4907209540217220934L;
 	
 	private String tenantId = null;
 	
-	public String getTenantId() {
+	/* (non-Javadoc)
+	 * @see org.os.javaee.orm.multitenancy.context.ITenantContext#getTenantId()
+	 */
+	@Override
+	public String getTenantInfo() {
 		return tenantId;
 	}
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
+
+	/* (non-Javadoc)
+	 * @see org.os.javaee.orm.multitenancy.context.ITenantContext#setTenantInfo(java.lang.Object)
+	 */
+	@Override
+	public void setTenantInfo(String tenantInfo) {
+			this.tenantId = (String)tenantInfo;
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class MultiTenancyEnabledEntityTest {
 	@Test
 	public final void createEntity() {
 		TenantContext context = new TenantContext();
-		context.setTenantId(String.valueOf(random.nextInt()));
+		context.setTenantInfo(String.valueOf(random.nextInt()));
 		tenantContextHolder.setTenantContext(context);
 		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();
 		entity.setName("OM SRI RAMA");
@@ -87,7 +87,7 @@ public class MultiTenancyEnabledEntityTest {
 	public final void crudEntity() {
 		TenantContext context = new TenantContext();
 		int tenantId = random.nextInt();
-		context.setTenantId(String.valueOf(tenantId));
+		context.setTenantInfo(String.valueOf(tenantId));
 		tenantContextHolder.setTenantContext(context);
 		
 		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();

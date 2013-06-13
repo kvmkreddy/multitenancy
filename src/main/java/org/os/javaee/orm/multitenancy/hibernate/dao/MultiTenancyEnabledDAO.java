@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @ReferenceImplementation(description="This is a reference implementation of DAO which is enaling/disabling hibernate filters through <code>org.os.javaee.orm.multitenancy.hibernate.SessionFactory</code>")
 @MultiTenancy(strategy=Strategy.DISCRIMINATOR)
-//@EnableFilter(filterNames={"filterOne","filter2"},filters=@Filters(filters={@Filter(name="tenantFilter",condition="",parameters=@Parameter(type="",name=""))}))
 @EnableFilter(filterNames={"tenantFilter"})
 @Transactional
 @Repository
@@ -61,7 +60,7 @@ public class MultiTenancyEnabledDAO<T extends Serializable> {
 	@Transactional(rollbackFor = Exception.class)
     public Serializable save(final T newEntity) {
         Session session = getCurrentSession();
-        log.debug("Entity Info-->:"+(newEntity));
+        log.debug("Entity Info is:-->:"+(newEntity));
         return session.save(newEntity);
     }
     

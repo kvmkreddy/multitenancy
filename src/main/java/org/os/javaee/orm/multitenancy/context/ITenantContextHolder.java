@@ -10,7 +10,7 @@ package org.os.javaee.orm.multitenancy.context;
  */
 public interface ITenantContextHolder {
 	
-	TenantContext getTenantContext();
+	ITenantContext<?> getTenantContext();
 	
-	void setTenantContext(TenantContext context);
+	void setTenantContext(ITenantContext<?> context);
 }

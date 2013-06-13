@@ -72,7 +72,7 @@ public class ThreadLocalTenantContextHolderTest {
 
 	private void populateContents() {
 		TenantContext context = new TenantContext();
-		context.setTenantId("Some Tenant Info");
+		context.setTenantInfo("Some Tenant Info");
 		contextHolder.setTenantContext(context);
 	}
 
@@ -82,7 +82,7 @@ public class ThreadLocalTenantContextHolderTest {
 	@Test
 	public final void testSetTenantContext() {
 		populateContents();
-		Assert.assertNotNull("Successfully set contents into ContextHolder", contextHolder.getTenantContext().getTenantId());
+		Assert.assertNotNull("Successfully set contents into ContextHolder", contextHolder.getTenantContext().getTenantInfo());
 	}
 
 }

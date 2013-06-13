@@ -44,7 +44,7 @@ public class MultiTenancyEnabledEntity implements Serializable{
 	/**
 	 * @param tenantId the tenantId to set
 	 */
-	@InjectTenantInfo
+	@InjectTenantInfo()
 	public void setTenantId(int tenantId) {
 		this.tenantId = tenantId;
 	}

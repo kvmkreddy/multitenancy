@@ -1,17 +1,15 @@
 package org.os.javaee.orm.multitenancy.hibernate.interceptor;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
-import org.hibernate.type.Type;
 import org.os.javaee.orm.multitenancy.annotations.InjectTenantInfo;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
 import org.os.javaee.orm.multitenancy.context.ITenantContextHolder;
+import org.os.javaee.orm.multitenancy.context.injector.ITenantContextInfoInjector;
 import org.os.javaee.orm.multitenancy.validate.Assert;
 
 /**
@@ -31,10 +29,11 @@ import org.os.javaee.orm.multitenancy.validate.Assert;
 public class HibernateMTInterceptor extends EmptyInterceptor {
 
 	private static final long serialVersionUID = 5132099610022438699L;
-
-	private transient ITenantContextHolder contextHolder;
 	private static final Logger log = Logger.getLogger(HibernateMTInterceptor.class);
-
+	
+	private transient ITenantContextHolder contextHolder;
+	private ITenantContextInfoInjector contextInjector;
+	
 	/**
 	 * @return the contextHolder
 	 */
@@ -50,13 +49,30 @@ public class HibernateMTInterceptor extends EmptyInterceptor {
 		this.contextHolder = contextHolder;
 	}
 	
+	
+	/**
+	 * @return the contextInjector
+	 */
+	public ITenantContextInfoInjector getContextInjector() {
+		return contextInjector;
+	}
+
+
+	/**
+	 * @param contextInjector the contextInjector to set
+	 */
+	public void setContextInjector(ITenantContextInfoInjector contextInjector) {
+		this.contextInjector = contextInjector;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see org.hibernate.EmptyInterceptor#preFlush(java.util.Iterator)
 	 */
 	@Override
 	public void preFlush(@SuppressWarnings("rawtypes") Iterator entities) {
 		//TODO Add better logging facilities.
-		log.debug("Call in prePlush().");
+		log.debug("*************************** Call in prePlush(). *************************** ");
 		if(Assert.isNotNull(entities,contextHolder,contextHolder.getTenantContext())){
 			while(entities.hasNext()){
 				Object entity = entities.next();
@@ -66,53 +82,6 @@ public class HibernateMTInterceptor extends EmptyInterceptor {
 		}
 	}
 	
-/*	 (non-Javadoc)
-	 * @see org.hibernate.EmptyInterceptor#onFlushDirty(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
-	 
-	@Override
-	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-		log.debug("Call in onFlushDirty() -->:"+(entity.getClass().getCanonicalName()));
-		invokeMethod(entity);
-		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
-	}
-
-
-	 (non-Javadoc)
-	 * @see org.hibernate.EmptyInterceptor#onSave(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
-	 
-	@Override
-	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-		log.debug("Call in onSave() -->:"+(entity.getClass().getCanonicalName()));
-		invokeMethod(entity);
-		return super.onSave(entity, id, state, propertyNames, types);
-	}
-
-
-	 (non-Javadoc)
-	 * @see org.hibernate.EmptyInterceptor#onDelete(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
-	 
-	@Override
-	public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-		log.debug("Call in onDelete() -->:"+(entity.getClass().getCanonicalName()));
-		invokeMethod(entity);
-		super.onDelete(entity, id, state, propertyNames, types);
-	}
-
-
-	 (non-Javadoc)
-	 * @see org.hibernate.EmptyInterceptor#onLoad(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
-	 
-	@Override
-	public boolean onLoad(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-		log.debug("Call in onLoad() -->:"+(entity.getClass().getCanonicalName()));
-		invokeMethod(entity);
-		return super.onLoad(entity, id, state, propertyNames, types);
-	}
-
-*/
-	/**
-	 * @param clazz
-	 */
 	protected void invokeMethod(Object clazz) {
 		if(clazz.getClass().isAnnotationPresent(MultiTenancy.class) && 
 				(clazz.getClass().getAnnotation(MultiTenancy.class) != null)&&
@@ -121,34 +90,56 @@ public class HibernateMTInterceptor extends EmptyInterceptor {
 			for(Method method:allMethods){
 				if(method.isAnnotationPresent(InjectTenantInfo.class)){
 					try {
+						this.getContextInjector().inject(contextHolder.getTenantContext(), clazz, method);
+					} catch (IllegalArgumentException | SecurityException e) {
+						log.error("Exception in injecting context info. Exception message -->:"+(e.getMessage()),e);
+					}
+				}
+			}
+		}
+	}
+	
+	
+/*	*//**
+	 * @param clazz
+	 *//*
+	protected void invokeMethod(Object clazz) {
+		if(clazz.getClass().isAnnotationPresent(MultiTenancy.class) && 
+				(clazz.getClass().getAnnotation(MultiTenancy.class) != null)&&
+				(((MultiTenancy)clazz.getClass().getAnnotation(MultiTenancy.class)).strategy() == Strategy.DISCRIMINATOR)){
+			Method[] allMethods = clazz.getClass().getDeclaredMethods();
+			for(Method method:allMethods){
+				if(method.isAnnotationPresent(InjectTenantInfo.class)){
+					try {
+						String tenantInfo = contextHolder.getTenantContext().getTenantInfo().toString();
 						if(method.getParameterTypes()[0].isPrimitive()){
 							switch(method.getParameterTypes()[0].getName()){
 							case "int":
-								method.invoke(clazz, Integer.valueOf(contextHolder.getTenantContext().getTenantId()).intValue());
+								method.invoke(clazz, Integer.valueOf(tenantInfo).intValue());
 								break;
 							case "long":
-								method.invoke(clazz, new Long(contextHolder.getTenantContext().getTenantId()).longValue());
+								method.invoke(clazz, Long.valueOf(tenantInfo).longValue());
 								break;
 							case "double":
-								method.invoke(clazz, new Double(contextHolder.getTenantContext().getTenantId()).doubleValue());
+								method.invoke(clazz, Double.valueOf(tenantInfo).doubleValue());
 								break;
 							}
 						}else if(method.getParameterTypes()[0].getCanonicalName().startsWith("java.lang.")){
 							switch(method.getParameterTypes()[0].getCanonicalName()){
 							case "java.lang.String":
-								method.invoke(clazz, contextHolder.getTenantContext().getTenantId());
+								method.invoke(clazz, tenantInfo);
 								break;
 							case "java.lang.Integer":
-								method.invoke(clazz, Integer.valueOf(contextHolder.getTenantContext().getTenantId()));
+								method.invoke(clazz, Integer.valueOf(tenantInfo));
 								break;
 							case "java.lang.Long":
-								method.invoke(clazz, new Long(contextHolder.getTenantContext().getTenantId()));
+								method.invoke(clazz, Long.valueOf(tenantInfo));
 								break;
 							case "java.lang.Double":
-								method.invoke(clazz, new Double(contextHolder.getTenantContext().getTenantId()));
+								method.invoke(clazz, Double.valueOf(tenantInfo));
 								break;
 							default:
-								method.invoke(clazz, contextHolder.getTenantContext().getTenantId());
+								method.invoke(clazz, tenantInfo);
 								break;									
 							}
 						}else if(method.getParameterTypes()[0].isAnnotationPresent(MultiTenancy.class) &&
@@ -167,5 +158,5 @@ public class HibernateMTInterceptor extends EmptyInterceptor {
 				}
 			}
 		}
-	}
+	}*/
 }

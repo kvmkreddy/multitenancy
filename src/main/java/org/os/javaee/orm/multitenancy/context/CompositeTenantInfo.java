@@ -1,44 +1,28 @@
-/**
- * <p>Title: MultiTenancyInfo</p>
- * <p><b>Description:</b> MultiTenancyInfo</p>
- * <p>Copyright: Copyright (c) 2013</p>
- * <p>Company: Open Source Development.</p>
- * @author Murali Reddy
- * @version 1.0
- */
-package org.os.javaee.orm.multitenancy.entity;
+package org.os.javaee.orm.multitenancy.context;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
-import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
-import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
 import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 
 /**
- * <p>Title: MultiTenancyInfo</p>
- * <p><b>Description:</b> MultiTenancyInfo</p>
+ * <p>Title: CompositeTenantInfo</p>
+ * <p><b>Description:</b> CompositeTenantInfo</p>
  * <p>Copyright: Copyright (c) 2013</p>
  * <p>Company: Open Source Development.</p>
  * @author Murali Reddy
  * @version 1.0
  */
-@Embeddable
-@MultiTenancy(strategy=Strategy.DISCRIMINATOR)
 @ReferenceImplementation(description="This is a reference implementation of composite tenant info.")
-public class MultiTenancyInfo implements Serializable{
+public class CompositeTenantInfo implements Serializable {
+	private static final long serialVersionUID = 2381212043314252041L;
 	
-	private static final long serialVersionUID = 8092350254739056045L;
-
-	private int tenantIdOne=0;
-	private int tenantIdTwo=0;
-	private int tenantIdThree=0;
+	private int tenantIdOne;
+	private int tenantIdTwo;
+	private int tenantIdThree;
 	
-	public MultiTenancyInfo() {	}
+	public CompositeTenantInfo() {	}
 
-	public MultiTenancyInfo(int tenantIdOne, int tenantIdTwo, int tenantIdThree) {
+	public CompositeTenantInfo(int tenantIdOne, int tenantIdTwo, int tenantIdThree) {
 		this.tenantIdOne = tenantIdOne;
 		this.tenantIdTwo = tenantIdTwo;
 		this.tenantIdThree = tenantIdThree;
@@ -54,7 +38,6 @@ public class MultiTenancyInfo implements Serializable{
 	/**
 	 * @param tenantIdOne the tenantIdOne to set
 	 */
-	
 	public void setTenantIdOne(int tenantIdOne) {
 		this.tenantIdOne = tenantIdOne;
 	}
@@ -92,8 +75,9 @@ public class MultiTenancyInfo implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		return "MultiTenancyInfo [tenantIdOne=" + tenantIdOne
+		return "CompositeTenantInfo [tenantIdOne=" + tenantIdOne
 				+ ", tenantIdTwo=" + tenantIdTwo + ", tenantIdThree="
 				+ tenantIdThree + "]";
 	}
+
 }

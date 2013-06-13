@@ -26,7 +26,7 @@
 	<bean id="hibernateInterceptor" class="org.os.javaee.orm.multitenancy.hibernate.interceptor.HibernateMTInterceptor">
 		<property name="contextHolder" ref="tenantContextHolder"/>
 		<property name="contextInjector">
-			<bean name="contextInjector" class="org.os.javaee.orm.multitenancy.context.injector.DefaultTenantContextInfoInjector"/>
+			<bean name="contextInjector" class="org.os.javaee.orm.multitenancy.context.injector.CompositeTenantContextInfoInjector"/>
 		</property>
 	</bean>
 
@@ -56,10 +56,16 @@
 			<list value-type="java.util.ArrayList">
 					<bean name="tenantFilterInfo" class="org.os.javaee.orm.multitenancy.hibernate.FilterInfo">
 						<property name="name" value="tenantFilter"/>
-						<property name="defaultCondition" value=":tenantParam=TENANT_ID"/>
+						<property name="defaultCondition" value=":tenantParamOne=CMP_TENANT_ID1 and :tenantParamTwo=CMP_TENANT_ID2 and :tenantParamThree=CMP_TENANT_ID3"/>
 						<property name="parametersType">
 							<map>
-								<entry key="tenantParam">
+								<entry key="tenantParamOne">
+									<bean name="intType" class="org.hibernate.type.IntegerType"/>
+								</entry>
+								<entry key="tenantParamTwo">
+									<bean name="intType" class="org.hibernate.type.IntegerType"/>
+								</entry>
+								<entry key="tenantParamThree">
 									<bean name="intType" class="org.hibernate.type.IntegerType"/>
 								</entry>
 							</map>

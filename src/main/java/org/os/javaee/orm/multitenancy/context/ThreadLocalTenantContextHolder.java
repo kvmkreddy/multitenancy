@@ -11,13 +11,15 @@ package org.os.javaee.orm.multitenancy.context;
  */
 public class ThreadLocalTenantContextHolder implements ITenantContextHolder {
 
-	private ThreadLocal<TenantContext> holder = new ThreadLocal<TenantContext>();
+	private ThreadLocal<ITenantContext<?>> holder = new ThreadLocal<ITenantContext<?>>();
 	
-	public TenantContext getTenantContext(){
+	public ITenantContext<?> getTenantContext(){
 		return holder.get();
 	}
 	
-	public void setTenantContext(TenantContext context){
+	@Override
+	public void setTenantContext(ITenantContext<?> context) {
 		holder.set(context);
+		
 	}
 }

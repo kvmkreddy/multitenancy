@@ -1,9 +1,7 @@
 package org.os.javaee.orm.multitenancy.hibernate;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -22,9 +20,7 @@ import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
 public class SessionFactory {
 
 	private org.hibernate.SessionFactory  sessionFactory = null;
-	@Deprecated
-	private Map<String, List<String>> daoFilterMappings = new HashMap<String, List<String>>();
-	
+
 	private ThreadLocal<List<String>> filterConfig = new ThreadLocal<List<String>>();
 	
 	public SessionFactory() { }
@@ -83,21 +79,5 @@ public class SessionFactory {
 	 */
 	public void setSessionFactory(org.hibernate.SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the daoFilterMappings
-	 */
-	@Deprecated
-	public Map<String, List<String>> getDaoFilterMappings() {
-		return daoFilterMappings;
-	}
-
-	/**
-	 * @param daoFilterMappings the daoFilterMappings to set
-	 */
-	@Deprecated
-	public void setDaoFilterMappings(Map<String, List<String>> daoFilterMappings) {
-		this.daoFilterMappings = daoFilterMappings;
 	}
 }
