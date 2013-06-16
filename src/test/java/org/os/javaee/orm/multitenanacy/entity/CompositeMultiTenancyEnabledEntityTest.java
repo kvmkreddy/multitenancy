@@ -1,11 +1,3 @@
-/**
- * <p>Title: CompositeMultiTenancyEnabledEntityTest</p>
- * <p><b>Description:</b> CompositeMultiTenancyEnabledEntityTest</p>
- * <p>Copyright: Copyright (c) 2013</p>
- * <p>Company: Open Source Development.</p>
- * @author Murali Reddy
- * @version 1.0
- */
 package org.os.javaee.orm.multitenanacy.entity;
 
 import java.security.SecureRandom;
@@ -22,8 +14,7 @@ import org.os.javaee.orm.multitenancy.context.CompositeTenantInfo;
 import org.os.javaee.orm.multitenancy.context.ITenantContext;
 import org.os.javaee.orm.multitenancy.context.ITenantContextHolder;
 import org.os.javaee.orm.multitenancy.entity.CompositeMultiTenancyEnabledEntity;
-import org.os.javaee.orm.multitenancy.entity.MultiTenancyInfo;
-import org.os.javaee.orm.multitenancy.hibernate.dao.MultiTenancyEnabledDAO;
+import org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledDAO;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -37,6 +28,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class CompositeMultiTenancyEnabledEntityTest {
 
+	@SuppressWarnings("unused")
 	private static Logger log = Logger.getLogger(CompositeMultiTenancyEnabledEntityTest.class);
 
 	static MultiTenancyEnabledDAO<CompositeMultiTenancyEnabledEntity> dao = null;
@@ -88,9 +80,9 @@ public class CompositeMultiTenancyEnabledEntityTest {
 		tenantInfo.setTenantIdTwo(random.nextInt());
 		tenantInfo.setTenantIdThree(random.nextInt());
 		context.setTenantInfo(tenantInfo);
-		tenantContextHolder.setTenantContext(context);
+		tenantContextHolder.setTenantContext(context); 
 		CompositeMultiTenancyEnabledEntity entity = new CompositeMultiTenancyEnabledEntity();
-		entity.setName("OM SRI RAMA");
+		entity.setName("Murali Reddy");
 		dao.save(entity);
 	}
 

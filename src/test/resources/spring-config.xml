@@ -87,7 +87,11 @@
 		<property name="sessionFactory" ref="springSessionFactory" />
 	</bean>
 	
-	<bean name="mtEnabledDAO" class="org.os.javaee.orm.multitenancy.hibernate.dao.MultiTenancyEnabledDAO">
+	<bean name="hibernateEntityManagerAdapter" class="org.os.javaee.orm.multitenancy.hibernate.HibernateEntityManagerAdapter">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
+	
+	<bean name="mtEnabledDAO" class="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledDAO">
+		<property name="entityManagerAdapter" ref="hibernateEntityManagerAdapter"/>
+	</bean>	
 </beans>

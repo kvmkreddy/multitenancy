@@ -17,6 +17,6 @@ import java.lang.annotation.Target;
 @Target(value=ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Deprecated
-public @interface EnableMultiTenancy {
+public @interface EnableMultiTenancy{
 
 }

@@ -12,8 +12,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.os.javaee.orm.multitenancy.context.ITenantContextHolder;
 import org.os.javaee.orm.multitenancy.context.TenantContext;
+import org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledDAO;
 import org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity;
-import org.os.javaee.orm.multitenancy.hibernate.dao.MultiTenancyEnabledDAO;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -76,8 +77,8 @@ public class MultiTenancyEnabledEntityTest {
 		context.setTenantInfo(String.valueOf(random.nextInt()));
 		tenantContextHolder.setTenantContext(context);
 		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();
-		entity.setName("OM SRI RAMA");
-		dao.save(entity);
+		entity.setName("Murali Reddy");
+		dao.create(entity);
 	}
 	
 	/**
@@ -91,7 +92,7 @@ public class MultiTenancyEnabledEntityTest {
 		tenantContextHolder.setTenantContext(context);
 		
 		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();
-		entity.setName("OM SRI RAMA");
+		entity.setName("Murali Reddy");
 		
 		Integer returnEntityId = (Integer)dao.save(entity);
 		
@@ -100,23 +101,23 @@ public class MultiTenancyEnabledEntityTest {
 		Assert.assertNotNull(entity.getTenantId());
 		Assert.assertEquals(tenantId,entity.getTenantId());
 		
-		MultiTenancyEnabledEntity getEntity = dao.get(MultiTenancyEnabledEntity.class, returnEntityId);
+		MultiTenancyEnabledEntity getEntity = dao.read(MultiTenancyEnabledEntity.class, returnEntityId);
 		
 		Assert.assertNotNull(getEntity);
 		Assert.assertNotNull(getEntity.getId());
 		Assert.assertNotNull(getEntity.getTenantId());
 		Assert.assertEquals(tenantId,getEntity.getTenantId());
-		getEntity.setName("Jai Sri Ram");
+		getEntity.setName("Murali Krishna Reddy");
 		dao.update(getEntity);
 		
-		MultiTenancyEnabledEntity updatedEntity = dao.get(MultiTenancyEnabledEntity.class, returnEntityId);
+		MultiTenancyEnabledEntity updatedEntity = dao.read(MultiTenancyEnabledEntity.class, returnEntityId);
 		
 		Assert.assertNotNull(updatedEntity);
 		Assert.assertNotNull(updatedEntity.getId());
 		Assert.assertNotNull(updatedEntity.getTenantId());
 		//Assert.assertEquals(returnEntityId,updatedEntity.getId());
 		Assert.assertEquals(tenantId,updatedEntity.getTenantId());
-		Assert.assertEquals("Jai Sri Ram",updatedEntity.getName());
+		Assert.assertEquals("Murali Krishna Reddy",updatedEntity.getName());
 		
 		dao.delete(entity);
 		
