@@ -74,6 +74,25 @@
 			</map>
 		</constructor-arg>
 	</bean>
+
+	<bean name="extendedFilterMappings" class="java.util.HashMap">
+		<constructor-arg type="java.util.Map">
+			<map key-type="java.lang.String" value-type="java.util.List">
+				<entry key="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity">
+					<bean name="filterNamesList" class="java.util.ArrayList">
+						<constructor-arg type="java.util.Collection">
+							<list>
+								<bean name="tenantFilterInfo" class="org.os.javaee.orm.multitenancy.hibernate.FilterInfo">
+									<property name="name" value="tenantFilter"/>
+									<property name="condition" value=":tenantParam=TENANT_ID"/>
+								</bean>
+							</list>
+						</constructor-arg>
+					</bean>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
  	 
 	<bean id="springSessionFactory"  class="org.os.javaee.orm.multitenancy.hibernate.MultiTenancyLocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -93,6 +112,8 @@
 		<property name="filterList" ref="filterList"/>
 		
 		<property name="filterMappings" ref="filterMappings"/>
+		
+		<property name="extendedFilterMappings" ref="extendedFilterMappings"/>
 		
 		<property name="packagesToScan">
 			<list merge="true">

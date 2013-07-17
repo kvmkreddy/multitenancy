@@ -24,9 +24,12 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean {
 
 	private static final Logger log = Logger.getLogger(MultiTenancyLocalSessionFactoryBean.class);
+	private static final String bannerStart = "\n****************** FILTER INFO FOR MULTITENANACY START *********************\n";
+	private static final String bannerEnd = "\n****************** FILTER INFO FOR MULTITENANACY COMPLETED *********************\n";
 	
 	private List<FilterInfo> filterList = new ArrayList<FilterInfo>();
 	private Map<String,List<String>> filterMappings = new HashMap<String,List<String>>();
+	private Map<String,List<FilterInfo>> extendedFilterMappings = new HashMap<String,List<FilterInfo>>();
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.orm.hibernate4.LocalSessionFactoryBean#buildSessionFactory(org.springframework.orm.hibernate4.LocalSessionFactoryBuilder)
@@ -54,9 +57,21 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 				for(String filterName:getFilterMappings().get(pClass.getEntityName())){
 					FilterInfo filterInfo = filterDefinitionMap.get(filterName); 
 					pClass.addFilter(filterInfo.getName(), (filterInfo.getCondition() != null ? filterInfo.getCondition():filterInfo.getDefaultCondition()), false, null, null);
-					log.info("Entity Name -->:"+(pClass.getEntityName())+"\t And Filters -->:"+(pClass.getFilters().size()));
+					
+					log.info(bannerStart+"Enabling filter(with default condition) -->:"+(filterInfo.getName())+"\n for Entity Name -->:"+(pClass.getEntityName())+"\n And Total Filters -->:"+(pClass.getFilters().size())+bannerEnd);
 				}
 			}
+			
+			if(getExtendedFilterMappings().containsKey(pClass.getEntityName())){
+				for(FilterInfo filterInfo:getExtendedFilterMappings().get(pClass.getEntityName())){
+					if(! getFilterMappings().get(pClass.getEntityName()).contains(filterInfo.getName())){
+						pClass.addFilter(filterInfo.getName(), (filterInfo.getCondition() != null ? filterInfo.getCondition():filterDefinitionMap.get(filterInfo).getDefaultCondition()), false, null, null);
+						log.info(bannerStart+"Enabling filter(with condition)-->:"+(filterInfo.getName())+"\n for Entity Name -->:"+(pClass.getEntityName())+"\n And Total Filters -->:"+(pClass.getFilters().size())+bannerEnd);
+					}else{
+						log.info(bannerStart+"Filter(with name) -->:"+(filterInfo.getName())+"\n is already enabled for Entity Name -->:"+(pClass.getEntityName())+"\n And Total Filters -->:"+(pClass.getFilters().size())+bannerEnd);
+					}
+				}
+			}			
 		}
 		return super.buildSessionFactory(sfb);
 
@@ -88,5 +103,18 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 	 */
 	public void setFilterMappings(Map<String, List<String>> filterMappings) {
 		this.filterMappings = filterMappings;
+	}
+	/**
+	 * @return the extendedFilterMappings
+	 */
+	public Map<String, List<FilterInfo>> getExtendedFilterMappings() {
+		return extendedFilterMappings;
+	}
+	/**
+	 * @param extendedFilterMappings the extendedFilterMappings to set
+	 */
+	public void setExtendedFilterMappings(
+			Map<String, List<FilterInfo>> extendedFilterMappings) {
+		this.extendedFilterMappings = extendedFilterMappings;
 	}
 }
