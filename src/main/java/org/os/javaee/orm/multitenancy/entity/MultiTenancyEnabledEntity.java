@@ -9,10 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Filter;
 import org.os.javaee.orm.multitenancy.annotations.InjectTenantInfo;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
-import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
+import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 /**
  * <p>Title: MultiTenancyEnabledEntity</p>
  * <p><b>Description:</b> MultiTenancyEnabledEntity</p>
@@ -25,6 +26,8 @@ import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
 @Table(name="CLIENT")
 @MultiTenancy(strategy=Strategy.DISCRIMINATOR)
 @ReferenceImplementation(description="This is a reference implementation of Enity which will be injected with tenant info at runtime.")
+//@Filter(name = "tenantFilter", condition = ":tenantParam=TENANT_ID")
+//@Filter(name = "tenantFilter")
 public class MultiTenancyEnabledEntity implements Serializable{
 
 	private static final long serialVersionUID = -8320043017606570740L;

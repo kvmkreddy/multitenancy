@@ -42,51 +42,51 @@ public class HibernateEntityManagerAdapter implements IEntityManagerAdapter{
 	}
 	
     @Transactional(readOnly = true)
-    public Object findById(final Class<?> entityClass, final int id) {
+    public Object findById(final Class<?> entityClass, final int id){
         return getCurrentSession().get(entityClass, id);
     }
     
     @Transactional(readOnly = true)
-    public Object get(final Class<?> entityClass, final int id) {
-        return getDefaultSession().get(entityClass, id);
+    public Object get(final Class<?> entityClass, final int id){
+        return getCurrentSession().get(entityClass, id);
     }
 	
     @Transactional(readOnly = true)
-    public List<?> findAll(final Class<?> entityClass) {
+    public List<?> findAll(final Class<?> entityClass){
         return getCurrentSession().createQuery(
                 "from " + entityClass.getName()).list();
     }
 
 	@Transactional(rollbackFor = Exception.class)
-    public void persist(final Object newEntity) {
-        Session session = getCurrentSession();
+    public void persist(final Object newEntity){
+        Session session = getDefaultSession();
         log.debug("Entity Info-->:"+(newEntity));
         session.persist(newEntity);
     }
 
 	@Transactional(rollbackFor = Exception.class)
-    public Serializable save(final Object newEntity) {
-        Session session = getCurrentSession();
+    public Serializable save(final Object newEntity){
+        Session session = getDefaultSession();
         log.debug("Entity Info is:-->:"+(newEntity));
         return session.save(newEntity);
     }
     
 	@Transactional(rollbackFor = Exception.class)
-    public void saveOrUpdate(final Object newEntity) {
+    public void saveOrUpdate(final Object newEntity){
         Session session = getDefaultSession();
         log.debug("Entity Info-->:"+(newEntity));
         session.saveOrUpdate(newEntity);
     }
 	
 	@Transactional(rollbackFor = Exception.class)
-    public Object update(final Object peristentEntity) {
+    public Object update(final Object peristentEntity){
         Session session = getDefaultSession();
         return session.merge(peristentEntity);
     }
     
 	@Transactional(rollbackFor = Exception.class)
-    public void delete(final Object peristentEntity) {
-        Session session = getCurrentSession();
+    public void delete(final Object peristentEntity){
+        Session session = getDefaultSession();
         session.delete(peristentEntity);
     }
 

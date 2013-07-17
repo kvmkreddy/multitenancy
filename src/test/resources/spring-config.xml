@@ -29,14 +29,52 @@
 			<bean name="contextInjector" class="org.os.javaee.orm.multitenancy.context.injector.DefaultTenantContextInfoInjector"/>
 		</property>
 	</bean>
-
+	
+	<bean id="defaultMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.DefaultFilterMapper">
+		<property name="contextHolder" ref="tenantContextHolder"/>
+	</bean>
+	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.h2.Driver" />
 		<property name="url" value="jdbc:h2:tcp://localhost/orm" />
 		<property name="username" value="username" />
 		<property name="password" value="password" />
 	</bean>
+
+	<bean name="filterList" class="java.util.ArrayList">
+		<constructor-arg type="java.util.Collection">
+			<list value-type="java.util.ArrayList">
+					<bean name="tenantFilterInfo" class="org.os.javaee.orm.multitenancy.hibernate.FilterInfo">
+						<property name="name" value="tenantFilter"/>
+						<property name="defaultCondition" value=":tenantParam=TENANT_ID"/>
+						<property name="parametersType">
+							<map>
+								<entry key="tenantParam">
+									<bean name="intType" class="org.hibernate.type.IntegerType"/>
+								</entry>
+							</map>
+						</property>
+					</bean>
+			</list>
+		</constructor-arg>
+	</bean>
  
+	<bean name="filterMappings" class="java.util.HashMap">
+		<constructor-arg type="java.util.Map">
+			<map key-type="java.lang.String" value-type="java.util.List">
+				<entry key="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity">
+					<bean name="filterNamesList" class="java.util.ArrayList">
+						<constructor-arg type="java.util.Collection">
+							<list value-type="java.lang.String">
+									<value>tenantFilter</value>
+							</list>
+						</constructor-arg>
+					</bean>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+ 	 
 	<bean id="springSessionFactory"  class="org.os.javaee.orm.multitenancy.hibernate.MultiTenancyLocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="entityInterceptor" ref="hibernateInterceptor" />
@@ -52,23 +90,9 @@
 			</props>
 		</property>
 		
-		<property name="filterList">
-			<list value-type="java.util.ArrayList">
-					<bean name="tenantFilterInfo" class="org.os.javaee.orm.multitenancy.hibernate.FilterInfo">
-						<property name="name" value="tenantFilter"/>
-						<property name="defaultCondition" value=":tenantParam=TENANT_ID"/>
-						<property name="parametersType">
-							<map>
-								<entry key="tenantParam">
-									<bean name="intType" class="org.hibernate.type.IntegerType"/>
-								</entry>
-							</map>
-							
-						</property>
-					</bean>
-				
-			</list>
-		</property>
+		<property name="filterList" ref="filterList"/>
+		
+		<property name="filterMappings" ref="filterMappings"/>
 		
 		<property name="packagesToScan">
 			<list merge="true">
@@ -79,9 +103,10 @@
 	
 	<bean id="sessionFactory" class="org.os.javaee.orm.multitenancy.hibernate.SessionFactory">
 		<property name="sessionFactory" ref="springSessionFactory"/>
+		<property name="filterMapper" ref="defaultMapper"/>
 	</bean>
+	
 	<tx:annotation-driven transaction-manager="txManager"/> 
-
 	
 	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="springSessionFactory" />

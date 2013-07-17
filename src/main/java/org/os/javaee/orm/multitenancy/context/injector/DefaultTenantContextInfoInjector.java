@@ -23,7 +23,7 @@ public class DefaultTenantContextInfoInjector implements ITenantContextInfoInjec
 	/* (non-Javadoc)
 	 * @see org.os.javaee.orm.multitenancy.context.injector.ITenantContextInfoInjector#inject(org.os.javaee.orm.multitenancy.context.ITenantContext, java.lang.Object)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes"})
+	@SuppressWarnings({ "unchecked"})
 	@Override
 	public void inject(ITenantContext<?> context, Object entity, Method method) {
 		invokeMethod((ITenantContext<String>) context,entity,method);
@@ -34,7 +34,6 @@ public class DefaultTenantContextInfoInjector implements ITenantContextInfoInjec
 	 * @param context
 	 * @param entity
 	 */
-	@SuppressWarnings({ "rawtypes"})
 	protected void invokeMethod(ITenantContext<String> context, Object entity, Method method) {
 		try {
 			String tenantInfo = (String) context.getTenantInfo();

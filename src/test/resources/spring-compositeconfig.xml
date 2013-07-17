@@ -43,7 +43,6 @@
 		
 		<property name="hibernateProperties" >
 			<props>
-				<!--  <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop> -->
 				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
@@ -69,10 +68,8 @@
 									<bean name="intType" class="org.hibernate.type.IntegerType"/>
 								</entry>
 							</map>
-							
 						</property>
 					</bean>
-				
 			</list>
 		</property>
 		

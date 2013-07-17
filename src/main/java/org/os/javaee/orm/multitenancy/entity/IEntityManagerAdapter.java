@@ -1,6 +1,7 @@
 package org.os.javaee.orm.multitenancy.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>Title: IEntityManagerAdapter</p>
@@ -13,11 +14,20 @@ import java.io.Serializable;
  */
 public interface IEntityManagerAdapter{
 
+	public Object findById(final Class<?> entityClass, final int id);
+	
+	public List<?> findAll(final Class<?> entityClass);
+	
 	public void create(final Object newEntity);
+	
 	public Serializable save(final Object newEntity);
+	
 	public Object read(final Class<?> entityClass, final int id);
+	
 	public Object update(final Object peristentEntity);
+	
 	public void delete(final Object peristentEntity);
+
 	public Object getDelegate();
 
 }

@@ -33,7 +33,6 @@ public class CompositeTenantContextInfoInjector implements ITenantContextInfoInj
 	 * @param context
 	 * @param entity
 	 */
-	@SuppressWarnings({ "rawtypes"})
 	protected void invokeMethod(ITenantContext<CompositeTenantInfo> context, Object entity, Method method) {
 		try {
 			CompositeTenantInfo tenantInfo = (CompositeTenantInfo) context.getTenantInfo();

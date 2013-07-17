@@ -1,6 +1,7 @@
 package org.os.javaee.orm.multitenancy.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.os.javaee.orm.multitenancy.annotations.EnableFilter;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
@@ -23,10 +24,20 @@ public class MultiTenancyEnabledDAO<T extends Serializable> {
 	private IEntityManagerAdapter entityManagerAdapter = null;
 	
 	/**
+	 * @param entityClass
+	 * @return
+	 * @see org.os.javaee.orm.multitenancy.entity.IEntityManagerAdapter#findAll(java.lang.Class)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<T> findAll(Class<T> entityClass){
+		return (List<T>) entityManagerAdapter.findAll(entityClass);
+	}
+	
+	/**
 	 * @param newEntity
 	 * @see org.os.javaee.orm.multitenancy.entity.IEntityManagerAdapter#create(java.lang.Object)
 	 */
-	public void create(Object newEntity) {
+	public void create(T newEntity) {
 		entityManagerAdapter.create(newEntity);
 	}
 	

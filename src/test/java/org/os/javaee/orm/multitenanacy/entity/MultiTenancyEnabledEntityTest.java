@@ -1,6 +1,7 @@
 package org.os.javaee.orm.multitenanacy.entity;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
@@ -71,7 +72,7 @@ public class MultiTenancyEnabledEntityTest {
 	/**
 	 * Test method for {@link org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity} creation.
 	 */
-	@Test
+	//@Test
 	public final void createEntity() {
 		TenantContext context = new TenantContext();
 		context.setTenantInfo(String.valueOf(random.nextInt()));
@@ -81,10 +82,32 @@ public class MultiTenancyEnabledEntityTest {
 		dao.create(entity);
 	}
 	
+	@Test
+	public final void findAllEntities() {
+		TenantContext context = new TenantContext();
+		Integer tenantId = random.nextInt();
+		context.setTenantInfo(String.valueOf(tenantId));
+		tenantContextHolder.setTenantContext(context);
+		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();
+		entity.setName("Murali Reddy");
+		dao.create(entity);
+		
+		List<MultiTenancyEnabledEntity> entityList = dao.findAll(MultiTenancyEnabledEntity.class);
+		log.info("Entity List -->:"+(entityList));
+		Assert.assertNotNull(entityList);
+		Assert.assertEquals(entityList.size(), 1);
+		Assert.assertEquals(entityList.get(0).getName(), "Murali Reddy");
+		
+
+/*		MultiTenancyEnabledEntity getEntity = dao.read(MultiTenancyEnabledEntity.class,entityList.get(0).getId());
+		Assert.assertNotNull(getEntity);
+		log.info("Entity Info -->:"+(getEntity));*/
+	}
+	
 	/**
 	 * Test method for {@link org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity} creation/read/updation/deletion.
 	 */
-	@Test
+	//@Test
 	public final void crudEntity() {
 		TenantContext context = new TenantContext();
 		int tenantId = random.nextInt();

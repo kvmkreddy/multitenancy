@@ -3,11 +3,13 @@ package org.os.javaee.orm.multitenancy.hibernate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hibernate.Filter;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.os.javaee.orm.multitenancy.annotations.EnableFilter;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
+import org.os.javaee.orm.multitenancy.hibernate.mapper.IFilterMapper;
 
 /**
  * <p>Title: SessionFactory</p>
@@ -20,7 +22,12 @@ import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
 public class SessionFactory {
 
 	private org.hibernate.SessionFactory  sessionFactory = null;
-
+	/***
+	 * TODO Inject this filterMapper at runtime (by using FilterMapperFactory) based on 'EnableFilter' meta data. 
+	 * 		In this way we can provide multiple mappers based on tenant info type(as per the entity/dao).
+	 */
+	private IFilterMapper filterMapper;
+	
 	private ThreadLocal<List<String>> filterConfig = new ThreadLocal<List<String>>();
 	
 	public SessionFactory() { }
@@ -47,8 +54,11 @@ public class SessionFactory {
 					if(filterNames != null && filterNames.length >0){
 						this.filterConfig.set(Arrays.asList(filterNames));
 						for(String filterName:filterNames){
-							
-							session.enableFilter(filterName);
+							Filter filter = session.enableFilter(filterName);
+							if(this.getFilterMapper() != null){
+								//TODO Needs to implement generic mapper which will map composite MT Info into Filter.
+								filterMapper.map(filter);
+							}
 						}
 					}
 		}
@@ -80,4 +90,20 @@ public class SessionFactory {
 	public void setSessionFactory(org.hibernate.SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
+
+	/**
+	 * @return the filterMapper
+	 */
+	public IFilterMapper getFilterMapper() {
+		return filterMapper;
+	}
+
+	/**
+	 * @param filterMapper the filterMapper to set
+	 */
+	public void setFilterMapper(IFilterMapper filterMapper) {
+		this.filterMapper = filterMapper;
+	}
+	
+	
 }

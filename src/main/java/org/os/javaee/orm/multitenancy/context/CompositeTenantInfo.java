@@ -2,6 +2,7 @@ package org.os.javaee.orm.multitenancy.context;
 
 import java.io.Serializable;
 
+import org.os.javaee.orm.multitenancy.annotations.FilterParamMapping;
 import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 
 /**
@@ -20,7 +21,7 @@ public class CompositeTenantInfo implements Serializable {
 	private int tenantIdTwo;
 	private int tenantIdThree;
 	
-	public CompositeTenantInfo() {	}
+	public CompositeTenantInfo() {}
 
 	public CompositeTenantInfo(int tenantIdOne, int tenantIdTwo, int tenantIdThree) {
 		this.tenantIdOne = tenantIdOne;
@@ -31,6 +32,7 @@ public class CompositeTenantInfo implements Serializable {
 	/**
 	 * @return the tenantIdOne
 	 */
+	@FilterParamMapping(name="tenantParamOne")
 	public int getTenantIdOne() {
 		return tenantIdOne;
 	}
@@ -45,6 +47,7 @@ public class CompositeTenantInfo implements Serializable {
 	/**
 	 * @return the tenantIdTwo
 	 */
+	@FilterParamMapping(name="tenantParamTwo")
 	public int getTenantIdTwo() {
 		return tenantIdTwo;
 	}
@@ -59,6 +62,7 @@ public class CompositeTenantInfo implements Serializable {
 	/**
 	 * @return the tenantIdThree
 	 */
+	@FilterParamMapping(name="tenantParamThree")
 	public int getTenantIdThree() {
 		return tenantIdThree;
 	}

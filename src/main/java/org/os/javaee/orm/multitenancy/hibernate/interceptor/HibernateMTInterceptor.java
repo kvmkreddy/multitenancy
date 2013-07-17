@@ -1,10 +1,12 @@
 package org.os.javaee.orm.multitenancy.hibernate.interceptor;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
+import org.hibernate.type.Type;
 import org.os.javaee.orm.multitenancy.annotations.InjectTenantInfo;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
@@ -82,6 +84,28 @@ public class HibernateMTInterceptor extends EmptyInterceptor {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.hibernate.EmptyInterceptor#onLoad(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
+	 */
+	@Override
+	public boolean onLoad(Object entity, Serializable id, Object[] state,
+			String[] propertyNames, Type[] types) {
+		// TODO Auto-generated method stub
+		log.debug("*************************** Call in onLoad(). *************************** ");
+		return super.onLoad(entity, id, state, propertyNames, types);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.hibernate.EmptyInterceptor#onPrepareStatement(java.lang.String)
+	 */
+	@Override
+	public String onPrepareStatement(String sql) {
+		// TODO Auto-generated method stub
+		log.debug("*************************** Call in onPreparedStatement(). *************************** "+(sql));
+		return super.onPrepareStatement(sql);
+	}
+
 	protected void invokeMethod(Object clazz) {
 		if(clazz.getClass().isAnnotationPresent(MultiTenancy.class) && 
 				(clazz.getClass().getAnnotation(MultiTenancy.class) != null)&&
@@ -98,65 +122,4 @@ public class HibernateMTInterceptor extends EmptyInterceptor {
 			}
 		}
 	}
-	
-	
-/*	*//**
-	 * @param clazz
-	 *//*
-	protected void invokeMethod(Object clazz) {
-		if(clazz.getClass().isAnnotationPresent(MultiTenancy.class) && 
-				(clazz.getClass().getAnnotation(MultiTenancy.class) != null)&&
-				(((MultiTenancy)clazz.getClass().getAnnotation(MultiTenancy.class)).strategy() == Strategy.DISCRIMINATOR)){
-			Method[] allMethods = clazz.getClass().getDeclaredMethods();
-			for(Method method:allMethods){
-				if(method.isAnnotationPresent(InjectTenantInfo.class)){
-					try {
-						String tenantInfo = contextHolder.getTenantContext().getTenantInfo().toString();
-						if(method.getParameterTypes()[0].isPrimitive()){
-							switch(method.getParameterTypes()[0].getName()){
-							case "int":
-								method.invoke(clazz, Integer.valueOf(tenantInfo).intValue());
-								break;
-							case "long":
-								method.invoke(clazz, Long.valueOf(tenantInfo).longValue());
-								break;
-							case "double":
-								method.invoke(clazz, Double.valueOf(tenantInfo).doubleValue());
-								break;
-							}
-						}else if(method.getParameterTypes()[0].getCanonicalName().startsWith("java.lang.")){
-							switch(method.getParameterTypes()[0].getCanonicalName()){
-							case "java.lang.String":
-								method.invoke(clazz, tenantInfo);
-								break;
-							case "java.lang.Integer":
-								method.invoke(clazz, Integer.valueOf(tenantInfo));
-								break;
-							case "java.lang.Long":
-								method.invoke(clazz, Long.valueOf(tenantInfo));
-								break;
-							case "java.lang.Double":
-								method.invoke(clazz, Double.valueOf(tenantInfo));
-								break;
-							default:
-								method.invoke(clazz, tenantInfo);
-								break;									
-							}
-						}else if(method.getParameterTypes()[0].isAnnotationPresent(MultiTenancy.class) &&
-								(method.getParameterTypes()[0].getAnnotation(MultiTenancy.class) != null)&&
-								(((MultiTenancy)method.getParameterTypes()[0].getAnnotation(MultiTenancy.class)).strategy() == Strategy.DISCRIMINATOR)){
-							//method.invoke(entity, new MultiTenancyInfo(new Integer(contextHolder.getTenantContext().getTenantId())));
-							//TODO Below logic of creating method argument object (by using reflection) is wrong. We should inject the 'composite MT Key' creator/builder into this interceptor.
-							Thread.currentThread().getContextClassLoader().loadClass(method.getParameterTypes()[0].getClass().getCanonicalName());
-							invokeMethod(method.getParameterTypes()[0].getClass().getConstructor().newInstance());
-						}
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException |
-								ClassNotFoundException | InstantiationException | NoSuchMethodException | SecurityException e) {
-							//TODO Add better error handling facility here.
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	}*/
 }
