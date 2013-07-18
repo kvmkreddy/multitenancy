@@ -7,6 +7,7 @@ import org.os.javaee.orm.multitenancy.annotations.EnableFilter;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
 import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>Title: MultiTenancyEnabledDAO</p>
@@ -78,6 +79,24 @@ public class MultiTenancyEnabledDAO<T extends Serializable> {
 	public void delete(T peristentEntity) {
 		entityManagerAdapter.delete(peristentEntity);
 	}
+	
+	/**
+	 * @param queryName
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<T> getListByNamedQuery(String queryName) {
+        return (List<T>)entityManagerAdapter.getListByNamedQuery(queryName);
+    }
+
+	/**
+	 * @param queryString
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<T> getListByNamedNativeQuery(String queryString) {
+        return (List<T>)entityManagerAdapter.getListByNamedNativeQuery(queryString);
+    }	
 	
 	/**
 	 * @return

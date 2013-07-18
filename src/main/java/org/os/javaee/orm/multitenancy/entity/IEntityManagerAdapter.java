@@ -18,6 +18,10 @@ public interface IEntityManagerAdapter{
 	
 	public List<?> findAll(final Class<?> entityClass);
 	
+    public List<?> getListByNamedQuery(String queryName);
+
+	public List<?> getListByNamedNativeQuery(String queryString);
+	
 	public void create(final Object newEntity);
 	
 	public Serializable save(final Object newEntity);

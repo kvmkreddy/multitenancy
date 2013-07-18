@@ -7,9 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Filter;
 import org.os.javaee.orm.multitenancy.annotations.InjectTenantInfo;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy;
 import org.os.javaee.orm.multitenancy.annotations.MultiTenancy.Strategy;
@@ -26,7 +27,8 @@ import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 @Table(name="CLIENT")
 @MultiTenancy(strategy=Strategy.DISCRIMINATOR)
 @ReferenceImplementation(description="This is a reference implementation of Enity which will be injected with tenant info at runtime.")
-//@Filter(name = "tenantFilter", condition = ":tenantParam=TENANT_ID")
+@NamedQuery(name="findAllEntitiesQuery", query="SELECT e FROM MultiTenancyEnabledEntity e")
+//@NamedNativeQuery(name="findAllEntitiesNativeQuery", query="SELECT * FROM CLIENT")
 //@Filter(name = "tenantFilter")
 public class MultiTenancyEnabledEntity implements Serializable{
 

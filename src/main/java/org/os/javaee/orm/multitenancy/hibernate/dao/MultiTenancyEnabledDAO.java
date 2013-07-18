@@ -51,6 +51,18 @@ public class MultiTenancyEnabledDAO<T extends Serializable> {
                 "from " + entityClass.getName()).list();
     }
 
+	@SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
+    public List<T> getListByNamedQuery(String queryName) {
+        return getCurrentSession().getNamedQuery(queryName).list();
+    }
+
+	@SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
+    public List<T> getListByNamedNativeQuery(String queryString) {
+        return getCurrentSession().createSQLQuery(queryString).list();
+    }
+	
 	@Transactional(rollbackFor = Exception.class)
     public void persist(final T newEntity) {
         Session session = getCurrentSession();

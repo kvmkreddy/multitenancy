@@ -57,6 +57,18 @@ public class HibernateEntityManagerAdapter implements IEntityManagerAdapter{
                 "from " + entityClass.getName()).list();
     }
 
+	@SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
+    public List<? extends Object> getListByNamedQuery(String queryName) {
+        return getCurrentSession().getNamedQuery(queryName).list();
+    }
+
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
+    public List<? extends Object> getListByNamedNativeQuery(String queryString) {
+        return getCurrentSession().createSQLQuery(queryString).list();
+    }
+	
 	@Transactional(rollbackFor = Exception.class)
     public void persist(final Object newEntity){
         Session session = getDefaultSession();

@@ -72,8 +72,8 @@ public class MultiTenancyEnabledEntityTest {
 	/**
 	 * Test method for {@link org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity} creation.
 	 */
-	//@Test
-	public final void createEntity() {
+	@Test
+	public final void verifyCreate() {
 		TenantContext context = new TenantContext();
 		context.setTenantInfo(String.valueOf(random.nextInt()));
 		tenantContextHolder.setTenantContext(context);
@@ -83,15 +83,16 @@ public class MultiTenancyEnabledEntityTest {
 	}
 	
 	@Test
-	public final void findAllEntities() {
+	public final void verifyFindAllNRead() {
 		TenantContext context = new TenantContext();
 		Integer tenantId = random.nextInt();
 		context.setTenantInfo(String.valueOf(tenantId));
 		tenantContextHolder.setTenantContext(context);
+		
 		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();
 		entity.setName("Murali Reddy");
 		dao.create(entity);
-		
+
 		List<MultiTenancyEnabledEntity> entityList = dao.findAll(MultiTenancyEnabledEntity.class);
 		log.info("Entity List -->:"+(entityList));
 		Assert.assertNotNull(entityList);
@@ -99,16 +100,16 @@ public class MultiTenancyEnabledEntityTest {
 		Assert.assertEquals(entityList.get(0).getName(), "Murali Reddy");
 		
 
-/*		MultiTenancyEnabledEntity getEntity = dao.read(MultiTenancyEnabledEntity.class,entityList.get(0).getId());
+		MultiTenancyEnabledEntity getEntity = dao.read(MultiTenancyEnabledEntity.class,entityList.get(0).getId());
 		Assert.assertNotNull(getEntity);
-		log.info("Entity Info -->:"+(getEntity));*/
+		log.info("Entity Info -->:"+(getEntity));
 	}
 	
 	/**
 	 * Test method for {@link org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity} creation/read/updation/deletion.
 	 */
-	//@Test
-	public final void crudEntity() {
+	@Test
+	public final void verifyCRUD() {
 		TenantContext context = new TenantContext();
 		int tenantId = random.nextInt();
 		context.setTenantInfo(String.valueOf(tenantId));
@@ -143,6 +144,56 @@ public class MultiTenancyEnabledEntityTest {
 		Assert.assertEquals("Murali Krishna Reddy",updatedEntity.getName());
 		
 		dao.delete(entity);
+	}
+	
+	@Test
+	public void verifyNamedQuery(){
+		TenantContext context = new TenantContext();
+		int tenantId = random.nextInt();
+		context.setTenantInfo(String.valueOf(tenantId));
+		tenantContextHolder.setTenantContext(context);
 		
-	}	
+		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();
+		String name = "Murali Reddy ~ "+(tenantId);
+		entity.setName(name);
+		
+		Integer returnEntityId = (Integer)dao.save(entity);
+		
+		log.debug("Primary Key -->:"+(entity.getId()));
+		Assert.assertNotNull(returnEntityId);
+		Assert.assertNotNull(entity.getTenantId());
+		Assert.assertEquals(tenantId,entity.getTenantId());
+		
+		List<MultiTenancyEnabledEntity> entityList = dao.getListByNamedQuery("findAllEntitiesQuery");
+		log.info("Entity List -->:"+(entityList));
+		Assert.assertNotNull(entityList);
+		Assert.assertEquals(entityList.size(), 1);
+		Assert.assertEquals(entityList.get(0).getName(), name);
+	}
+	
+	@Test
+	public void verifyNativeQuery(){
+		TenantContext context = new TenantContext();
+		int tenantId = random.nextInt();
+		context.setTenantInfo(String.valueOf(tenantId));
+		tenantContextHolder.setTenantContext(context);
+		
+		MultiTenancyEnabledEntity entity = new MultiTenancyEnabledEntity();
+		String name = "Murali Reddy ~ "+(tenantId);
+		entity.setName(name);
+		
+		Integer returnEntityId = (Integer)dao.save(entity);
+		
+		log.debug("Primary Key -->:"+(entity.getId()));
+		Assert.assertNotNull(returnEntityId);
+		Assert.assertNotNull(entity.getTenantId());
+		Assert.assertEquals(tenantId,entity.getTenantId());
+		
+		List<MultiTenancyEnabledEntity> entityList = dao.getListByNamedNativeQuery("SELECT * FROM CLIENT");
+		log.info("Entity List -->:"+(entityList));
+		Assert.assertNotNull(entityList);
+		//Assert.assertEquals(entityList.size(), 1);
+		//Assert.assertEquals(entityList.get(0).getName(), name);
+	}
+	
 }
