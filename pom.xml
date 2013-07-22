@@ -13,8 +13,11 @@
 		<sourceLevel>1.7</sourceLevel>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+		<org.apache.slf4j.version>1.6.1</org.apache.slf4j.version>
+		<org.apache.log4j.version>1.2.16</org.apache.log4j.version>
 		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
 		<org.hibernate.version>4.2.0.Final</org.hibernate.version>
+		<org.eclipse.persistence.version>2.5.0</org.eclipse.persistence.version>
 	</properties>
 	<developers>
 		<developer>
@@ -30,19 +33,19 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<version>${org.apache.slf4j.version}</version>
 		</dependency>
 		<!-- concrete Log4J Implementation for SLF4J API -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.1</version>
+			<version>${org.apache.slf4j.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
+			<version>${org.apache.log4j.version}</version>
 		</dependency>
 
 		<!--Hibernate -->
@@ -52,6 +55,13 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>${org.hibernate.version}</version>
 		</dependency>
+
+		<!-- EclipseLink Dependencies -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>${org.eclipse.persistence.version}</version>
+		</dependency> 
 
 		<!-- Spring Dependencies -->
 		<dependency>
