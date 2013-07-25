@@ -108,18 +108,37 @@
 				<prop key="hibernate.default_batch_fetch_size">10</prop>
 			</props>
 		</property>
-		
+		<!-- 
 		<property name="filterList" ref="filterList"/>
 		
 		<property name="filterMappings" ref="filterMappings"/>
 		
 		<property name="extendedFilterMappings" ref="extendedFilterMappings"/>
+		-->
+		<property name="filterConfigMapper" ref="filterDefinitionConfigMapper"/>
 		
 		<property name="packagesToScan">
 			<list merge="true">
 				<value>org.os.javaee.orm.multitenancy.entity</value>
 			</list>
 		</property>		
+	</bean>
+
+	<bean name="filterDefinitionConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.FilterDefinitionConfigMapper">
+		<property name="filterList" ref="filterList"/>
+		<property name="nextMapper" ref="defaultDynamicFilterConfigMapper"/>
+	</bean>
+
+	<bean name="defaultDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.DefaultDynamicFilterConfigMapper">
+		<property name="filterList" ref="filterList"/>
+		<property name="filterMappings" ref="filterMappings"/>
+		<property name="nextMapper" ref="extendedDynamicFilterConfigMapper"/>
+	</bean>
+
+	<bean name="extendedDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.ExtendedDynamicFilterConfigMapper">
+		<property name="filterList" ref="filterList"/>
+		<property name="filterMappings" ref="filterMappings"/>
+		<property name="extendedFilterMappings" ref="extendedFilterMappings"/>
 	</bean>
 	
 	<bean id="sessionFactory" class="org.os.javaee.orm.multitenancy.hibernate.SessionFactory">
