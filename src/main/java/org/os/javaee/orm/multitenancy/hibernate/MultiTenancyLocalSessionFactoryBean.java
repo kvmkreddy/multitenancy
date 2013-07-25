@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.FilterDefinition;
 import org.hibernate.mapping.PersistentClass;
+import org.os.javaee.orm.multitenancy.hibernate.mapper.IDynamicFilterConfigMapper;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 
@@ -30,10 +31,21 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 	private List<FilterInfo> filterList = new ArrayList<FilterInfo>();
 	private Map<String,List<String>> filterMappings = new HashMap<String,List<String>>();
 	private Map<String,List<FilterInfo>> extendedFilterMappings = new HashMap<String,List<FilterInfo>>();
+
+	private IDynamicFilterConfigMapper filterConfigMapper = null;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.orm.hibernate4.LocalSessionFactoryBean#buildSessionFactory(org.springframework.orm.hibernate4.LocalSessionFactoryBuilder)
 	 */
+	@Override
+	protected SessionFactory buildSessionFactory(LocalSessionFactoryBuilder sfb) {
+		filterConfigMapper.addDynamicFilters(super.getConfiguration(), new ArrayList<String>());
+		return super.buildSessionFactory(sfb);
+	}
+	
+/*	 (non-Javadoc)
+	 * @see org.springframework.orm.hibernate4.LocalSessionFactoryBean#buildSessionFactory(org.springframework.orm.hibernate4.LocalSessionFactoryBuilder)
+	 
 	@Override
 	protected SessionFactory buildSessionFactory(LocalSessionFactoryBuilder sfb) {
 		Map<String,FilterInfo> filterDefinitionMap = new HashMap<String,FilterInfo>();
@@ -48,11 +60,6 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 		
 		for(Iterator<? extends PersistentClass> iter = this.getConfiguration().getClassMappings();iter.hasNext();){
 			PersistentClass pClass = iter.next();
-			/*if(pClass.getEntityName().equalsIgnoreCase("org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity")){
-				pClass.addFilter("tenantFilter", ":tenantParam=TENANT_ID", false, null, null);
-				log.info("Entity Name -->:"+(pClass.getEntityName())+"\t And Filters -->:"+(pClass.getFilters().size()));
-			}
-			*/
 			if(getFilterMappings().containsKey(pClass.getEntityName())){
 				for(String filterName:getFilterMappings().get(pClass.getEntityName())){
 					FilterInfo filterInfo = filterDefinitionMap.get(filterName); 
@@ -75,11 +82,11 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 		}
 		return super.buildSessionFactory(sfb);
 
-		/**
+		*//**
 		 * TODO Check the How we can implement dynamic filter creation (in case of lazy entity scan/parse) at runtime.
-		 */
+		 *//*
 	}
-
+*/
 	/**
 	 * @return the filterList
 	 */
@@ -117,4 +124,20 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 			Map<String, List<FilterInfo>> extendedFilterMappings) {
 		this.extendedFilterMappings = extendedFilterMappings;
 	}
+
+	/**
+	 * @return the filterConfigMapper
+	 */
+	public IDynamicFilterConfigMapper getFilterConfigMapper() {
+		return filterConfigMapper;
+	}
+
+	/**
+	 * @param filterConfigMapper the filterConfigMapper to set
+	 */
+	public void setFilterConfigMapper(IDynamicFilterConfigMapper filterConfigMapper) {
+		this.filterConfigMapper = filterConfigMapper;
+	}
+	
+	
 }

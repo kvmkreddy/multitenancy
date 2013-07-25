@@ -15,11 +15,9 @@ import org.os.javaee.orm.multitenancy.hibernate.FilterInfo;
  * @author Murali Reddy
  * @version 1.0
  */
-public class FilterDefinitionConfigMapper implements IDynamicFilterConfigMapper {
+public class FilterDefinitionConfigMapper extends AbstractDynamicFilterConfigMapper{
 	
 	private List<FilterInfo> filterList = new ArrayList<FilterInfo>();
-	
-	private IDynamicFilterConfigMapper nextFilter;
 	
 	/* (non-Javadoc)
 	 * @see org.os.javaee.orm.multitenancy.hibernate.mapper.IDynamicFilterConfigMapper#addDynamicFilters(org.hibernate.cfg.Configuration, java.util.List)
@@ -33,9 +31,9 @@ public class FilterDefinitionConfigMapper implements IDynamicFilterConfigMapper 
 			}
 		}
 		
-		if(this.getNextFilter() != null){
-			this.getNextFilter().addDynamicFilters(config, existingFilters);
-		}
+		config.buildMappings();
+		
+		super.invokeNextDynamicFilterConfigMapper(config,existingFilters);
 	}
 
 	/**
@@ -51,20 +49,4 @@ public class FilterDefinitionConfigMapper implements IDynamicFilterConfigMapper 
 	public void setFilterList(List<FilterInfo> filterList) {
 		this.filterList = filterList;
 	}
-
-	/**
-	 * @return the nextFilter
-	 */
-	public IDynamicFilterConfigMapper getNextFilter() {
-		return nextFilter;
-	}
-
-	/**
-	 * @param nextFilter the nextFilter to set
-	 */
-	public void setNextFilter(IDynamicFilterConfigMapper nextFilter) {
-		this.nextFilter = nextFilter;
-	}
-
-	
 }
