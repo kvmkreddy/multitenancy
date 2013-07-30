@@ -1,16 +1,9 @@
 package org.os.javaee.orm.multitenancy.hibernate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
-import org.hibernate.engine.spi.FilterDefinition;
-import org.hibernate.mapping.PersistentClass;
-import org.os.javaee.orm.multitenancy.hibernate.mapper.IDynamicFilterConfigMapper;
+import org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig.IDynamicFilterConfigMapper;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 
@@ -24,13 +17,13 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
  */
 public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean {
 
-	private static final Logger log = Logger.getLogger(MultiTenancyLocalSessionFactoryBean.class);
+/*	private static final Logger log = Logger.getLogger(MultiTenancyLocalSessionFactoryBean.class);
 	private static final String bannerStart = "\n****************** FILTER INFO FOR MULTITENANACY START *********************\n";
 	private static final String bannerEnd = "\n****************** FILTER INFO FOR MULTITENANACY COMPLETED *********************\n";
-	
-	private List<FilterInfo> filterList = new ArrayList<FilterInfo>();
+*/	
+/*	private List<FilterInfo> filterList = new ArrayList<FilterInfo>();
 	private Map<String,List<String>> filterMappings = new HashMap<String,List<String>>();
-	private Map<String,List<FilterInfo>> extendedFilterMappings = new HashMap<String,List<FilterInfo>>();
+	private Map<String,List<FilterInfo>> extendedFilterMappings = new HashMap<String,List<FilterInfo>>();*/
 
 	private IDynamicFilterConfigMapper filterConfigMapper = null;
 	
@@ -87,44 +80,44 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 		 *//*
 	}
 */
-	/**
+/*	*//**
 	 * @return the filterList
-	 */
+	 *//*
 	public List<FilterInfo> getFilterList() {
 		return filterList;
 	}
-	/**
+	*//**
 	 * @param filterList the filterList to set
-	 */
+	 *//*
 	public void setFilterList(List<FilterInfo> filterList) {
 		this.filterList = filterList;
 	}
-	/**
+	*//**
 	 * @return the filterMappings
-	 */
+	 *//*
 	public Map<String, List<String>> getFilterMappings() {
 		return filterMappings;
 	}
-	/**
+	*//**
 	 * @param filterMappings the filterMappings to set
-	 */
+	 *//*
 	public void setFilterMappings(Map<String, List<String>> filterMappings) {
 		this.filterMappings = filterMappings;
 	}
-	/**
+	*//**
 	 * @return the extendedFilterMappings
-	 */
+	 *//*
 	public Map<String, List<FilterInfo>> getExtendedFilterMappings() {
 		return extendedFilterMappings;
 	}
-	/**
+	*//**
 	 * @param extendedFilterMappings the extendedFilterMappings to set
-	 */
+	 *//*
 	public void setExtendedFilterMappings(
 			Map<String, List<FilterInfo>> extendedFilterMappings) {
 		this.extendedFilterMappings = extendedFilterMappings;
 	}
-
+*/
 	/**
 	 * @return the filterConfigMapper
 	 */
@@ -138,6 +131,4 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 	public void setFilterConfigMapper(IDynamicFilterConfigMapper filterConfigMapper) {
 		this.filterConfigMapper = filterConfigMapper;
 	}
-	
-	
 }
