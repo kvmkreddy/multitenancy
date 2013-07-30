@@ -30,28 +30,19 @@
 		</property>
 	</bean>
 
+	<bean id="defaultMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.DefaultFilterMapper">
+		<property name="contextHolder" ref="tenantContextHolder"/>
+	</bean>
+
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.h2.Driver" />
 		<property name="url" value="jdbc:h2:tcp://localhost/orm" />
 		<property name="username" value="username" />
 		<property name="password" value="password" />
 	</bean>
- 
-	<bean id="springSessionFactory"  class="org.os.javaee.orm.multitenancy.hibernate.MultiTenancyLocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="entityInterceptor" ref="hibernateInterceptor" />
-		
-		<property name="hibernateProperties" >
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.format_sql">true</prop>
-				<prop key="hibernate.use_sql_comments">true</prop>				 
-				<prop key="hibernate.default_batch_fetch_size">10</prop>
-			</props>
-		</property>
-		
-		<property name="filterList">
+
+ 	<bean name="filterList" class="java.util.ArrayList">
+		<constructor-arg type="java.util.Collection">
 			<list value-type="java.util.ArrayList">
 					<bean name="tenantFilterInfo" class="org.os.javaee.orm.multitenancy.hibernate.FilterInfo">
 						<property name="name" value="tenantFilter"/>
@@ -71,13 +62,82 @@
 						</property>
 					</bean>
 			</list>
+		</constructor-arg>
+	</bean>
+
+ 	<bean name="filterMappings" class="java.util.HashMap">
+		<constructor-arg type="java.util.Map">
+			<map key-type="java.lang.String" value-type="java.util.List">
+				<entry key="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity">
+					<bean name="filterNamesList" class="java.util.ArrayList">
+						<constructor-arg type="java.util.Collection">
+							<list value-type="java.lang.String">
+									<value>tenantFilter</value>
+							</list>
+						</constructor-arg>
+					</bean>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean name="extendedFilterMappings" class="java.util.HashMap">
+		<constructor-arg type="java.util.Map">
+			<map key-type="java.lang.String" value-type="java.util.List">
+				<entry key="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity">
+					<bean name="filterNamesList" class="java.util.ArrayList">
+						<constructor-arg type="java.util.Collection">
+							<list>
+								<bean name="tenantFilterInfo" class="org.os.javaee.orm.multitenancy.hibernate.FilterInfo">
+									<property name="name" value="tenantFilter"/>
+									<property name="condition" value=":tenantParamOne=CMP_TENANT_ID1 and :tenantParamTwo=CMP_TENANT_ID2 and :tenantParamThree=CMP_TENANT_ID3"/>
+								</bean>
+							</list>
+						</constructor-arg>
+					</bean>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+		
+ 	<bean id="springSessionFactory"  class="org.os.javaee.orm.multitenancy.hibernate.MultiTenancyLocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="entityInterceptor" ref="hibernateInterceptor" />
+		
+		<property name="hibernateProperties" >
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>				 
+				<prop key="hibernate.default_batch_fetch_size">10</prop>
+			</props>
 		</property>
 		
+		<property name="filterConfigMapper" ref="filterDefinitionConfigMapper"/>
+
 		<property name="packagesToScan">
 			<list merge="true">
 				<value>org.os.javaee.orm.multitenancy.entity</value>
 			</list>
 		</property>		
+	</bean>
+
+	<bean name="filterDefinitionConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig.FilterDefinitionConfigMapper">
+		<property name="filterList" ref="filterList"/>
+		<property name="nextMapper" ref="defaultDynamicFilterConfigMapper"/>
+	</bean>
+
+	<bean name="defaultDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig.DefaultDynamicFilterConfigMapper">
+		<property name="filterList" ref="filterList"/>
+		<property name="filterMappings" ref="filterMappings"/>
+		<property name="nextMapper" ref="extendedDynamicFilterConfigMapper"/>
+	</bean>
+
+	<bean name="extendedDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig.ExtendedDynamicFilterConfigMapper">
+		<property name="filterList" ref="filterList"/>
+		<property name="filterMappings" ref="filterMappings"/>
+		<property name="extendedFilterMappings" ref="extendedFilterMappings"/>
 	</bean>
 	
 	<bean id="sessionFactory" class="org.os.javaee.orm.multitenancy.hibernate.SessionFactory">

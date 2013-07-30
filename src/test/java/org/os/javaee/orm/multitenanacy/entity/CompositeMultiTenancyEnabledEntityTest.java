@@ -74,7 +74,7 @@ public class CompositeMultiTenancyEnabledEntityTest {
 	 * 
 	 * TODO --> Needs to fix this test case.
 	 */
-	//@Test
+	@Test
 	public final void createEntity() {
 		CompositeTenantInfo tenantInfo = new CompositeTenantInfo();
 		ITenantContext<CompositeTenantInfo> context = new CompositeTenantContext();
