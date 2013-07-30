@@ -124,18 +124,18 @@
 		</property>		
 	</bean>
 
-	<bean name="filterDefinitionConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.FilterDefinitionConfigMapper">
+	<bean name="filterDefinitionConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig.FilterDefinitionConfigMapper">
 		<property name="filterList" ref="filterList"/>
 		<property name="nextMapper" ref="defaultDynamicFilterConfigMapper"/>
 	</bean>
 
-	<bean name="defaultDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.DefaultDynamicFilterConfigMapper">
+	<bean name="defaultDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig.DefaultDynamicFilterConfigMapper">
 		<property name="filterList" ref="filterList"/>
 		<property name="filterMappings" ref="filterMappings"/>
 		<property name="nextMapper" ref="extendedDynamicFilterConfigMapper"/>
 	</bean>
 
-	<bean name="extendedDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.ExtendedDynamicFilterConfigMapper">
+	<bean name="extendedDynamicFilterConfigMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig.ExtendedDynamicFilterConfigMapper">
 		<property name="filterList" ref="filterList"/>
 		<property name="filterMappings" ref="filterMappings"/>
 		<property name="extendedFilterMappings" ref="extendedFilterMappings"/>

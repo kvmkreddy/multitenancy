@@ -1,4 +1,4 @@
-package org.os.javaee.orm.multitenancy.hibernate.mapper;
+package org.os.javaee.orm.multitenancy.hibernate.mapper.filterConfig;
 
 import java.util.HashMap;
 import java.util.Iterator;
