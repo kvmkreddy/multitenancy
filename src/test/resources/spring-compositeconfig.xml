@@ -30,7 +30,7 @@
 		</property>
 	</bean>
 
-	<bean id="defaultMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.DefaultFilterMapper">
+	<bean id="compositeFilterMapper" class="org.os.javaee.orm.multitenancy.hibernate.mapper.CompositeFilterMapper">
 		<property name="contextHolder" ref="tenantContextHolder"/>
 	</bean>
 
@@ -68,7 +68,7 @@
  	<bean name="filterMappings" class="java.util.HashMap">
 		<constructor-arg type="java.util.Map">
 			<map key-type="java.lang.String" value-type="java.util.List">
-				<entry key="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity">
+				<entry key="org.os.javaee.orm.multitenancy.entity.CompositeMultiTenancyEnabledEntity">
 					<bean name="filterNamesList" class="java.util.ArrayList">
 						<constructor-arg type="java.util.Collection">
 							<list value-type="java.lang.String">
@@ -84,7 +84,7 @@
 	<bean name="extendedFilterMappings" class="java.util.HashMap">
 		<constructor-arg type="java.util.Map">
 			<map key-type="java.lang.String" value-type="java.util.List">
-				<entry key="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledEntity">
+				<entry key="org.os.javaee.orm.multitenancy.entity.CompositeMultiTenancyEnabledEntity">
 					<bean name="filterNamesList" class="java.util.ArrayList">
 						<constructor-arg type="java.util.Collection">
 							<list>
@@ -142,6 +142,7 @@
 	
 	<bean id="sessionFactory" class="org.os.javaee.orm.multitenancy.hibernate.SessionFactory">
 		<property name="sessionFactory" ref="springSessionFactory"/>
+		<property name="filterMapper" ref="compositeFilterMapper"/>
 	</bean>
 	<tx:annotation-driven transaction-manager="txManager"/> 
 
