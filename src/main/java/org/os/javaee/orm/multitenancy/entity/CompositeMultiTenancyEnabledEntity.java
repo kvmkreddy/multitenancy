@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.os.javaee.orm.multitenancy.annotations.InjectTenantInfo;
@@ -29,6 +30,7 @@ import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 @Table(name="COMP_CLIENT")
 @MultiTenancy(strategy=Strategy.DISCRIMINATOR)
 @ReferenceImplementation(description="This is a reference implementation of Enity which will be injected with composite tenant info at runtime.")
+@NamedQuery(name="findAllCompositeMTEntitiesQuery", query="SELECT e FROM CompositeMultiTenancyEnabledEntity e")
 public class CompositeMultiTenancyEnabledEntity implements Serializable{
 
 	private static final long serialVersionUID = -6877598014512888223L;
