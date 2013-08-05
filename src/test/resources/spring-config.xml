@@ -108,13 +108,7 @@
 				<prop key="hibernate.default_batch_fetch_size">10</prop>
 			</props>
 		</property>
-		<!-- 
-		<property name="filterList" ref="filterList"/>
-		
-		<property name="filterMappings" ref="filterMappings"/>
-		
-		<property name="extendedFilterMappings" ref="extendedFilterMappings"/>
-		-->
+
 		<property name="filterConfigMapper" ref="filterDefinitionConfigMapper"/>
 		
 		<property name="packagesToScan">
