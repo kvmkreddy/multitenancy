@@ -1,6 +1,7 @@
 package org.os.javaee.orm.multitenancy.hibernate.mapper;
 
 import org.hibernate.Filter;
+import org.os.javaee.orm.multitenancy.annotations.ReferenceImplementation;
 import org.os.javaee.orm.multitenancy.context.CompositeTenantInfo;
 import org.os.javaee.orm.multitenancy.context.ITenantContext;
 import org.os.javaee.orm.multitenancy.context.ITenantContextHolder;
@@ -13,6 +14,7 @@ import org.os.javaee.orm.multitenancy.context.ITenantContextHolder;
  * @author Murali Reddy
  * @version 1.0
  */
+@ReferenceImplementation(description="This is a reference implementation of composite tenant filter mapper.")
 public class CompositeFilterMapper implements IFilterMapper {
 
 	private static final String DEFAULT_FILTER_PARAM_NAME_ONE="tenantParamOne";
