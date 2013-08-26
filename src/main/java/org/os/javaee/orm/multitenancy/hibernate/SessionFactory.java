@@ -56,7 +56,6 @@ public class SessionFactory {
 						for(String filterName:filterNames){
 							Filter filter = session.enableFilter(filterName);
 							if(this.getFilterMapper() != null){
-								//TODO Needs to implement generic mapper which will map composite MT Info into Filter.
 								filterMapper.map(filter);
 							}
 						}
