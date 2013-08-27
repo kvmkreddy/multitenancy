@@ -24,7 +24,9 @@ public class MultiTenancyLocalSessionFactoryBean extends LocalSessionFactoryBean
 	 */
 	@Override
 	protected SessionFactory buildSessionFactory(LocalSessionFactoryBuilder sfb) {
-		filterConfigMapper.addDynamicFilters(super.getConfiguration(), new ArrayList<String>());
+		if(filterConfigMapper != null){
+			filterConfigMapper.addDynamicFilters(super.getConfiguration(), new ArrayList<String>());
+		}
 		return super.buildSessionFactory(sfb);
 	}
 	
