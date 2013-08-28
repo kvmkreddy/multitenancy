@@ -3,7 +3,6 @@ package org.os.javaee.orm.multitenancy.hibernate;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hibernate.Filter;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.os.javaee.orm.multitenancy.annotations.EnableFilter;
@@ -49,15 +48,13 @@ public class SessionFactory {
 				(classes[0].getAnnotation(MultiTenancy.class) != null)&&
 				(((MultiTenancy)classes[0].getAnnotation(MultiTenancy.class)).strategy() == Strategy.DISCRIMINATOR) &&
 				classes[0].isAnnotationPresent(EnableFilter.class) && 
-				classes[0].getAnnotation(EnableFilter.class) != null){
+				classes[0].getAnnotation(EnableFilter.class) != null &&
+				getFilterMapper() != null ){
 					String[] filterNames = ((EnableFilter)classes[0].getAnnotation(EnableFilter.class)).filterNames();
 					if(filterNames != null && filterNames.length >0){
 						this.filterConfig.set(Arrays.asList(filterNames));
 						for(String filterName:filterNames){
-							Filter filter = session.enableFilter(filterName);
-							if(this.getFilterMapper() != null){
-								filterMapper.map(filter);
-							}
+							filterMapper.map(session.enableFilter(filterName));
 						}
 					}
 		}
@@ -103,6 +100,4 @@ public class SessionFactory {
 	public void setFilterMapper(IFilterMapper filterMapper) {
 		this.filterMapper = filterMapper;
 	}
-	
-	
 }
