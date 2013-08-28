@@ -21,38 +21,48 @@
 	
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
-	<bean id="tenantDefault" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:tcp://localhost/tenantDefault" />
-		<property name="username" value="username" />
-		<property name="password" value="password" />
+	<bean id="tenantDefault" class="org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl">
+		<property name="dataSource">
+			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+				<property name="driverClassName" value="org.h2.Driver" />
+				<property name="url" value="jdbc:h2:tcp://localhost/tenantDefault" />
+				<property name="username" value="username" />
+				<property name="password" value="password" />
+			</bean>
+		</property>
 	</bean>
 
-	<bean id="tenantOne" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:tcp://localhost/tenantOne" />
-		<property name="username" value="username" />
-		<property name="password" value="password" />
+	<bean id="tenantOne" class="org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl">
+		<property name="dataSource">
+			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+				<property name="driverClassName" value="org.h2.Driver" />
+				<property name="url" value="jdbc:h2:tcp://localhost/tenantOne" />
+				<property name="username" value="username" />
+				<property name="password" value="password" />
+			</bean>
+		</property>
 	</bean>
 
-	<bean id="tenantTwo" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:tcp://localhost/tenantTwo" />
-		<property name="username" value="username" />
-		<property name="password" value="password" />
+	<bean id="tenantTwo" class="org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl">
+		<property name="dataSource">
+			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+				<property name="driverClassName" value="org.h2.Driver" />
+				<property name="url" value="jdbc:h2:tcp://localhost/tenantTwo" />
+				<property name="username" value="username" />
+				<property name="password" value="password" />
+			</bean>
+		</property>
 	</bean>
 
 	<bean id="springSessionFactory"  class="org.os.javaee.orm.multitenancy.hibernate.MultiTenancyLocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		
 		<property name="hibernateProperties" >
 			<props>
-				<!--  <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop> -->
 				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.use_sql_comments">true</prop>				 
 				<prop key="hibernate.default_batch_fetch_size">10</prop>
+				<prop key="hibernate.multiTenancy">org.hibernate.MultiTenancyStrategy.SCHEMA</prop>
 				<prop key="hibernate.multi_tenant_connection_provider">org.os.javaee.orm.multitenancy.hibernate.MultiTenantConnectionProviderImpl</prop>
 			</props>
 		</property>
@@ -77,8 +87,18 @@
 	<bean name="hibernateEntityManagerAdapter" class="org.os.javaee.orm.multitenancy.hibernate.HibernateEntityManagerAdapter">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
+
+	<bean name="mtConnectionProviderImpl" class="org.os.javaee.orm.multitenancy.hibernate.connection.MultiTenantConnectionProviderImpl">
+		<property name="connectionProviderProducer" ref="connectionProviderProducer"/>
+	</bean>
 	
-	<bean name="mtEnabledDAO" class="org.os.javaee.orm.multitenancy.entity.MultiTenancyEnabledDAO">
-		<property name="entityManagerAdapter" ref="hibernateEntityManagerAdapter"/>
-	</bean>	
+	<bean name="connectionProviderProducer" class="org.os.javaee.orm.multitenancy.hibernate.connection.ConnectionProviderProducer">
+		<property name="defaultConnectionProvider" ref="tenantDefault"/>
+		<property name="connectionProviderMap">
+			<map key-type="java.lang.String" value-type="org.hibernate.service.jdbc.connections.spi.ConnectionProvider">
+				<entry key="1" value-ref="tenantOne"/>
+				<entry key="2" value-ref="tenantTwo"/>
+			</map>
+		</property>
+	</bean>
 </beans>
